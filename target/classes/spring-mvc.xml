@@ -17,7 +17,6 @@
 
     <!--自动去扫描base-pack下面或者子包下面,添加注解-->
     <context:component-scan base-package="com.wb"/>
-
     <!--主要是处理web项目的静态文件问题-->
     <mvc:default-servlet-handler></mvc:default-servlet-handler>
     <!--含义就是支持注解-->
@@ -25,7 +24,7 @@
         <mvc:message-converters>
             <!-- @ResponseBody乱码问题，将StringHttpMessageConverter的默认编码设为UTF-8 -->
             <bean class="org.springframework.http.converter.StringHttpMessageConverter">
-                <constructor-arg value="true" />
+                <constructor-arg value="UTF-8" />
             </bean>
 
             <!-- 配置Fastjson支持 -->
@@ -75,14 +74,16 @@
     <!--配置拦截器-->
     <mvc:interceptors>
         <mvc:interceptor>
-            <mvc:mapping path="/*"/>
+            <mvc:mapping path="/*" />
             <bean class="com.wb.intercepter.LoginInterceptor">
                 <property name="excludedUrls">
                     <list>
-                        <value></value>
-                        <value></value>
-                        <value></value>
-                        <value></value>
+                        <value>/toLogin</value>
+                        <value>/register</value>
+                        <value>/login</value>
+                        <value>/activate</value>
+                        <value>/logout</value>
+                        <value>/weiboLogin</value>
                     </list>
                 </property>
             </bean>
