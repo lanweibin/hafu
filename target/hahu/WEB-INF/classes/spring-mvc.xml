@@ -20,7 +20,6 @@
 
     <!--主要是处理web项目的静态文件问题-->
     <mvc:default-servlet-handler></mvc:default-servlet-handler>
-
     <!--含义就是支持注解-->
     <mvc:annotation-driven>
         <mvc:message-converters>
@@ -49,7 +48,6 @@
                 </property>
             </bean>
         </mvc:message-converters>
-
     </mvc:annotation-driven>
 
     <!--上传文件 -->
@@ -73,4 +71,21 @@
         <property name="defaultEncoding" value="utf-8" />
     </bean>
 
+
+    <!--配置拦截器-->
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/*"/>
+            <bean class="com.wb.intercepter.LoginInterceptor">
+                <property name="excludedUrls">
+                    <list>
+                        <value></value>
+                        <value></value>
+                        <value></value>
+                        <value></value>
+                    </list>
+                </property>
+            </bean>
+        </mvc:interceptor>
+    </mvc:interceptors>
 </beans>
