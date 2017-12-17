@@ -45,6 +45,18 @@
     </bean>
 
 
+    <!--邮件处理-->
+    <bean id="javaMailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+        <property name="host" value="${mail.host}"/>
+        <property name="username" value="${mail.username}"/>
+        <property name="password" value="${mail.password}"/>
+        <property name="javaMailProperties">
+            <props>
+                <prop key="mail.smtp.auth">true</prop>
+            </props>
+        </property>
+    </bean>
+
     <!--注解，声明式事务-->
     <tx:annotation-driven transaction-manager="transactionManager"/>
     <!--事务管理器-->
