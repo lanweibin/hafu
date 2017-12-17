@@ -1,5 +1,7 @@
 package com.wb.util;
 
+import org.junit.Test;
+
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -7,6 +9,8 @@ import java.util.Date;
 import java.util.UUID;
 
 public class MyUtil {
+
+
     public static String md5(String plainText) {
         byte[] secretBytes = null;
         try {

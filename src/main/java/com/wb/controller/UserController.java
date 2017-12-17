@@ -37,7 +37,12 @@ public class UserController {
     @RequestMapping("/login")
     @ResponseBody
     public Response login(String email, String password, HttpServletResponse response){
-        Map<String, String > map = userService.login(email, password, response);
+        Map<String, Object > map = userService.login(email, password, response);
+        if (map.get("error") == null){
+            return new Response(0, "", map);
+        }else {
+            return new Response(1, map.get("error").toString());
+        }
     }
 
 

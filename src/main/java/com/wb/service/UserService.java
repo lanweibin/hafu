@@ -7,6 +7,7 @@ import com.wb.util.MyConstant;
 import com.wb.util.MyUtil;
 import com.wb.util.RedisKey;
 import org.apache.commons.lang3.StringUtils;
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.HashMap;
@@ -95,9 +97,38 @@ public class UserService {
     }
 
     //登入
-    public Map<String,String> login(String email, String password, HttpServletResponse response) {
+    public Map<String, Object> login(String email, String password, HttpServletResponse response) {
         Map<String, Object> map = new HashMap<>();
         //验证用户名和密码是否正确
-        Integer userId = userMapper.selectUserIdByEmailAndPassword(email, MyUtil.md5(password))
+        Integer userId = userMapper.selectUserIdByEmailAndPassword(email, MyUtil.md5(password));
+        if (userId == null) {
+            map.put("error", "用户名或密码错误");
+            return map;
+        }
+
+        // 校验用户帐号是否激活
+        Integer activationState = userMapper.selectActivationStateByUserId(userId);
+        if (activationState != 1) {
+            map.put("error", "该账户未激活");
+            return map;
+        }
+
+        // 设置登录cookie
+        String loginToken = MyUtil.createRandomCode();
+        Cookie cookie = new Cookie("loginToken", loginToken);
+        cookie.setPath("/");
+        cookie.setMaxAge(60*60*24*30);
+        response.addCookie(cookie);
+
+        //把token：userId存入redis，设置过期时间
+        Jedis jedis = jedisPool.getResource();
+        jedis.set(loginToken, userId.toString(), "NX", "EX", 60 * 60 * 24 * 30);
+        jedisPool.returnResource(jedis);
+
+        //将用户信息返回
+        User user = userMapper.selectUserInfoByUserId(userId);
+        user.setUserId(userId);
+        map.put("userInfo", user);
+        return map;
     }
 }
