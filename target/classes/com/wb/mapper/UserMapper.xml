@@ -11,10 +11,6 @@
         values(#{email},#{password},#{activationCode},#{joinTime},#{username},#{avatarUrl})
     </insert>
 
-    <!--<select id="selectUserIdByEmailAndPassword" resultType="int">-->
-        <!--SELECT user_id from user where email = #{email} and password = #{password}-->
-    <!--</select>-->
-
     <select id="selectUserIdByEmailAndPassword" resultType="int">
         select user_id from user where email = #{email} and password = #{password}
     </select>

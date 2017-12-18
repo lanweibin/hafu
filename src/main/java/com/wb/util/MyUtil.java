@@ -5,8 +5,7 @@ import org.junit.Test;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Date;
-import java.util.UUID;
+import java.util.*;
 
 public class MyUtil {
 
@@ -28,5 +27,13 @@ public class MyUtil {
 
     public static String createRandomCode() {
         return new Date().getTime() + UUID.randomUUID().toString().replace("-", "");
+    }
+
+    public static List<Integer> StringSetToIntegerList(Set<String> set) {
+        List<Integer> list = new ArrayList<>();
+        for (String s : set) {
+            list.add(Integer.parseInt(s));
+        }
+        return list;
     }
 }

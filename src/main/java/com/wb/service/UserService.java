@@ -1,13 +1,15 @@
 package com.wb.service;
 
 import com.wb.async.MailTask;
+import com.wb.mapper.CommentMapper;
 import com.wb.mapper.UserMapper;
+import com.wb.model.Answer;
+import com.wb.mapper.AnswerMapper;
 import com.wb.model.User;
 import com.wb.util.MyConstant;
 import com.wb.util.MyUtil;
 import com.wb.util.RedisKey;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -16,10 +18,9 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,10 +31,16 @@ public class UserService {
     private UserMapper userMapper;
 
     @Autowired
+    private AnswerMapper answerMapper;
+
+    @Autowired
     private JavaMailSender javaMailSender;//发送邮件用的
     //TaskExecutor是一个spring的线程池技术
     @Autowired
     private TaskExecutor taskExecutor;
+
+    @Autowired
+    private CommentMapper commentMapper;
 
     @Autowired
     private JedisPool jedisPool;
@@ -130,5 +137,63 @@ public class UserService {
         user.setUserId(userId);
         map.put("userInfo", user);
         return map;
+    }
+
+    public Integer getUserIdFromRedis(HttpServletRequest request) {
+        String loginToken = null;
+        Cookie[] cookies = request.getCookies();
+        for (Cookie cookie : cookies){
+            if (cookie.getName().equals("loginToken")){
+                loginToken = cookie.getValue();
+            }
+            break;
+        }
+
+        Jedis jedis = jedisPool.getResource();
+        String userId = jedis.get(loginToken);
+
+        return Integer.parseInt(userId);
+    }
+
+    public Map<String,Object> getIndexDetail(Integer userId, Integer curPage) {
+        Map<String, Object> map = new HashMap<>();
+        Jedis jedis = jedisPool.getResource();
+
+        Set<String> idSet = jedis.zrange(userId + RedisKey.FOLLOW_PEOPLE, 0, -1);// 某人关注哪些人
+        List<Integer> idList= MyUtil.StringSetToIntegerList(idSet);
+        List<Answer> answerList = new ArrayList<>();
+        if (idSet.size() > 0){
+            answerList = _getIndexDetail(idList, curPage);
+            for (Answer answer : answerList){
+                Long rank = jedis.zrank(answer.getAnswerId() + RedisKey.LIKE_ANSWER, String.valueOf(userId));
+                System.out.println("rank:" + rank);
+                answer.setLikeState(rank == null ? "false" : "true");
+            }
+        }
+
+        map.put("answerList",answerList);
+        jedisPool.returnResource(jedis);
+        return map;
+
+    }
+
+    private List<Answer> _getIndexDetail(List<Integer> idList, Integer curPage) {
+        //当请求页数为空时
+        curPage = curPage == null ? 1 : curPage;
+        //每页记录数，从哪里开始
+        int limit = 8;
+        int offset = (curPage - 1) * limit;
+        //构造查询map
+        Map<String, Object> map = new HashMap<>();
+        map.put("offset", offset);
+        map.put("limit", limit);
+        map.put("userIdList", idList);
+        List<Answer> answerList = answerMapper.listAnswerByUserIdList(map);
+
+        for (Answer answer :answerList) {
+            int commentCount = commentMapper.selectAnswerCommentCountByAnswerId(answer.getAnswerId());
+            answer.setCommentCount(commentCount);
+        }
+        return answerList;
     }
 }
