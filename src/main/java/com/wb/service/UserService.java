@@ -145,8 +145,9 @@ public class UserService {
         for (Cookie cookie : cookies){
             if (cookie.getName().equals("loginToken")){
                 loginToken = cookie.getValue();
+                break;
             }
-            break;
+
         }
 
         Jedis jedis = jedisPool.getResource();

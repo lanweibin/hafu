@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wb.mapper.CollectionMapper">
+    <resultMap id="userMap" type="com.wb.model.User">
+        <id column="user_id" property="userId"/>
+        <result column="username" property="username"></result>
+        <result column="avatar_url" property="avatarUrl"></result>
+        <result column="simple_desc" property="simpleDesc"></result>
+    </resultMap>
+
+    <resultMap id="collectionMap" type="com.wb.model.Collection">
+        <id column="collection_id" property="collectionId"></id>
+        <result column="collection_name" property="collectionName"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_time" property="createTime"/>
+
+        <association property="user" javaType="com.wb.model.User" resultMap="userMap"/>
+    </resultMap>
+
+    <select id="listCreatingCollectionByUserId" resultType="com.wb.model.Collection">
+        select collection_id,collection_name,create_time,update_time,followed_count
+		from collection
+		where user_id = #{userId}
+    </select>
+
+    <select id="selectUserIdByCollectionId" resultType="int">
+        SELECT user_id FROM collection
+        WHERE collection_id = #{collectionId}
+    </select>
+
+    <select id="selectCollectionByCollectionId" resultMap="collectionMap">
+        SELECT c.collection_id,c.collection_name,c.create_time,c.update_time,
+        u.user_id,u.username,u.avatar_url,u.simple_desc
+        FROM collection c join user u on c.user_id = u.user_id
+        WHERE collection_id = #{collectionId}
+    </select>
+</mapper>

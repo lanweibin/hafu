@@ -7,4 +7,6 @@ import java.util.Map;
 
 public interface AnswerMapper {
     List<Answer> listAnswerByUserIdList(Map<String, Object> map);
+
+    List<Answer> listAnswerByAnswerId(List<Integer> idList);
 }
