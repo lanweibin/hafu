@@ -196,4 +196,26 @@ public class UserService {
         }
         return answerList;
     }
+
+    public String  logout(HttpServletRequest request, HttpServletResponse response) {
+        String loginToken = null;
+        Cookie[] cookies = request.getCookies();
+        for (Cookie cookie : cookies){
+            if (cookie.getName().equals("loginTaken")) {
+                loginToken = cookie.getValue();
+                //从缓存中删除cookie
+                Jedis jedis = jedisPool.getResource();
+                jedis.del(loginToken);
+                jedisPool.returnResource(jedis);
+                break;
+            }
+        }
+
+        Cookie cookie = new Cookie("loginToken", "");
+        cookie.setPath("/");
+        cookie.setMaxAge(60 * 60 * 24 * 30);
+        response.addCookie(cookie);
+
+        return loginToken;
+    }
 }
