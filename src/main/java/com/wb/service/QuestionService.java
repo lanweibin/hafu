@@ -1,9 +1,8 @@
 package com.wb.service;
 
 import com.wb.mapper.QuestionMapper;
-import com.wb.model.Pagebean;
+import com.wb.model.PageBean;
 import com.wb.model.Question;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +16,7 @@ public class QuestionService {
     @Autowired
     private QuestionMapper questionMapper;
 
-    public Pagebean<Question> listQuestionByUserId(Integer userId, Integer curPage) {
+    public PageBean<Question> listQuestionByUserId(Integer userId, Integer curPage) {
         //当请求页数为空时
         curPage = curPage == null ? 1 : curPage;
         //每页记录数，从哪里开始
@@ -43,9 +42,9 @@ public class QuestionService {
         List<Question> questionList = questionMapper.listQuestionByUserId(map);
 
         //构造PageBean
-        Pagebean<Question> pagebean = new Pagebean<>(allPage,curPage);
-        pagebean.setList(questionList);
+        PageBean<Question> pageBean = new PageBean<>(allPage,curPage);
+        pageBean.setList(questionList);
 
-        return pagebean;
+        return pageBean;
     }
 }

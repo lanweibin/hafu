@@ -1,7 +1,9 @@
 package com.wb.controller;
 
-import com.wb.model.Pagebean;
+import com.wb.model.Answer;
+import com.wb.model.PageBean;
 import com.wb.model.Question;
+import com.wb.service.AnswerService;
 import com.wb.service.QuestionService;
 import com.wb.service.UserService;
 import com.wb.util.Response;
@@ -25,6 +27,9 @@ public class UserController {
 
     @Autowired
     private QuestionService questionService;
+
+    @Autowired
+    private AnswerService answerService;
 
 
     @RequestMapping("/toLogin")
@@ -65,11 +70,25 @@ public class UserController {
         //获取用户信息
         Map<String, Object> map = userService.profile(userId,localUserId);
         //获取回答列表
-        Pagebean<Question> pageBean = questionService.listQuestionByUserId(userId, page);
+        PageBean<Question> pageBean = questionService.listQuestionByUserId(userId, page);
         map.put("pageBean",pageBean);
 
         model.addAllAttributes(map);
         return "profileQuestion";
+    }
+
+    //我回答的问题
+    @RequestMapping("/profile/{userId}")
+    public String profile(@PathVariable Integer userId, Integer page, HttpServletRequest request, Model model) {
+        Integer localUserId = userService.getUserIdFromRedis(request);
+        // 获取用户信息
+        Map<String, Object> map = userService.profile(userId, localUserId);
+        // 获取回答列表
+        PageBean<Answer> pageBean = answerService.listAnswerByUserId(userId, page);
+        map.put("pageBean", pageBean);
+
+        model.addAllAttributes(map);
+        return "profileAnswer";
     }
 
 }

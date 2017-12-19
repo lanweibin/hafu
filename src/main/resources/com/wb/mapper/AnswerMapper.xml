@@ -14,7 +14,7 @@
     </resultMap>
 
     <resultMap  type="com.wb.model.Answer" id="answerMap">
-        <id column="user_id" property="userId"></id>
+        <id column="answer_id" property="answerId"></id>
         <result column="answer_content" property="answerContent"/>
         <result column="liked_count" property="likedCount"/>
         <result column="create_time" property="createTime"/>
@@ -52,5 +52,18 @@
                 #{item}
             </foreach>
         </where>
+    </select>
+
+    <select id="selectAnswerCountByUserId" resultType="int">
+        SELECT COUNT(*) FROM  answer where user_id = #{userId}
+    </select>
+
+    <select id="listAnswerByUserId" resultMap="answerMap">
+        select a.answer_id,a.answer_content,a.liked_count,a.create_time,
+        q.question_id,q.question_title,u.user_id,u.username,u.avatar_url,u.simple_desc
+        from answer a join question q on a.question_id = q.question_id
+        join user u on a.user_id = u.user_id
+        where u.user_id = #{userId}
+        limit #{offset},#{limit}
     </select>
 </mapper>

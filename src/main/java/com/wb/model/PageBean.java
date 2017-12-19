@@ -3,16 +3,16 @@ package com.wb.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Pagebean<T> {
+public class PageBean<T> {
     private  int allPage;
     private  int curPage;
 
     private List<T> list = new ArrayList<>();
 
-    public Pagebean() {
+    public PageBean() {
     }
 
-    public Pagebean(int allPage, int curPage) {
+    public PageBean(int allPage, int curPage) {
         this.allPage = allPage;
         this.curPage = curPage;
     }
@@ -43,7 +43,7 @@ public class Pagebean<T> {
 
     @Override
     public String toString() {
-        return "Pagebean{" +
+        return "PageBean{" +
                 "allPage=" + allPage +
                 ", curPage=" + curPage +
                 ", list=" + list +
