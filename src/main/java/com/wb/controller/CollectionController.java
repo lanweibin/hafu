@@ -55,4 +55,20 @@ public class CollectionController {
         model.addAllAttributes(map);
         return "collectionContent";
     }
+
+    @RequestMapping("/addCollection")
+    @ResponseBody
+    public Response addCollection(Collection collection, HttpServletRequest request) {
+        Integer userId = userService.getUserIdFromRedis(request);
+        collectionService.addCollection(collection, userId);
+        return new Response(0);
+    }
+
+    @RequestMapping("/judgePeopleFollowCollection")
+    @ResponseBody
+    public Response judgePeopleFollowCollection(Integer collectionId, HttpServletRequest request) {
+        Integer userId = userService.getUserIdFromRedis(request);
+        boolean status = collectionService.judgePeopleFollowCollection(userId, collectionId);
+        return new Response(0, "", status);
+    }
 }

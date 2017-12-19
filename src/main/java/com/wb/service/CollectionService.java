@@ -1,5 +1,6 @@
 package com.wb.service;
 
+import com.sun.org.apache.regexp.internal.RE;
 import com.wb.mapper.AnswerMapper;
 import com.wb.mapper.CollectionMapper;
 import com.wb.model.Answer;
@@ -12,11 +13,7 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
 
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class CollectionService {
@@ -72,5 +69,23 @@ public class CollectionService {
 
         jedisPool.returnResource(jedis);
         return map;
+    }
+
+    //创建收藏夹
+    public void addCollection(Collection collection, Integer userId) {
+        collection.setUserId(userId);
+        collection.setCreateTime(new Date().getTime());
+        collection.setUpdateTime(new Date().getTime());
+        collectionMapper.insertCollection(collection);
+    }
+
+    // 判断某人是否关注了某收藏夹
+    public boolean judgePeopleFollowCollection(Integer userId, Integer collectionId) {
+        Jedis jedis = jedisPool.getResource();
+        Long rank = jedis.zrank(userId + RedisKey.FOLLOW_COLLECTION, String.valueOf(collectionId));
+        jedisPool.returnResource(jedis);
+
+        System.out.println(rank);
+        return rank == null ? false : true;
     }
 }

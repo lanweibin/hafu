@@ -34,4 +34,10 @@
         FROM collection c join user u on c.user_id = u.user_id
         WHERE collection_id = #{collectionId}
     </select>
+
+    <!--创建收藏夹-->
+    <insert id="insertCollection" >
+        INSERT INTO collection(collection_name,create_time,update_time,user_id)
+        VALUES (#{collectionName},#{createTime},#{updateTime},#{userId})
+    </insert>
 </mapper>

@@ -13,4 +13,6 @@ public interface CollectionMapper {
     Integer selectUserIdByCollectionId(@Param("collectionId") Integer collectionId);
 
     Collection selectCollectionByCollectionId(Integer collectionId);
+
+    void insertCollection(Collection collection);
 }

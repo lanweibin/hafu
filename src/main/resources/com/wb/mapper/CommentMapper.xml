@@ -6,5 +6,7 @@
         SELECT COUNT(*) FROM answer_count
         WHERE answer_id = #{answerId}
     </select>
+
+
 </mapper>
 
