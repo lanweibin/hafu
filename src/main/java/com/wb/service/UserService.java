@@ -16,10 +16,12 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
+import sun.reflect.generics.visitor.Reifier;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.swing.text.rtf.RTFEditorKit;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -218,5 +220,32 @@ public class UserService {
         response.addCookie(cookie);
 
         return loginToken;
+    }
+
+    public Map<String,Object> profile(Integer userId, Integer localUserId) {
+        Map<String, Object> map = new HashMap<>();
+        User user = userMapper.selectProfileInfoByUserId(userId);
+
+        if (userId.equals(localUserId)){
+            map.put("isSelf", true);
+        }else {
+            map.put("isSelf", false);
+            System.out.println(false);
+        }
+
+        Jedis jedis = jedisPool.getResource();
+        Long followCount = jedis.zcard(userId + RedisKey.FOLLOW_PEOPLE);
+        Long followedCount = jedis.zcard(userId + RedisKey.FOLLOWED_PEOPLE);
+        Long followTopicCount = jedis.zcard(userId + RedisKey.FOLLOW_TOPIC);
+        Long followQuestionCount = jedis.zcard(userId + RedisKey.FOLLOW_QUESTION);
+        Long followCollectionCount = jedis.zcard(userId + RedisKey.FOLLOW_COLLECTION);
+        user.setFollowCount(Integer.parseInt(followCount + ""));
+        user.setFollowedCount(Integer.parseInt(followedCount + ""));
+        user.setFollowTopicCount(Integer.parseInt(followTopicCount + ""));
+        user.setFollowQuestionCount(Integer.parseInt(followQuestionCount + ""));
+        user.setFollowCollectionCount(Integer.parseInt(followCollectionCount + ""));
+
+        map.put("user", user);
+        return map;
     }
 }

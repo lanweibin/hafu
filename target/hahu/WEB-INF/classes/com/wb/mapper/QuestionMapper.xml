@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.wb.mapper.QuestionMapper">
+    <select id="selectQuestionCountByUserId" resultType="int">
+        select count(*) from question where user_id = #{userId}
+    </select>
+
+    <select id="listQuestionByUserId" resultType="com.wb.model.Question">
+        SELECT question_id,question_title,create_time from question
+        WHERE user_id = #{userId}
+        limit #{offset},#{limit}
+    </select>
+</mapper>
+
+

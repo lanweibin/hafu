@@ -19,6 +19,11 @@
         select count(*) from user where email = #{email}
     </select>
 
+    <select id="selectProfileInfoByUserId" resultType="com.wb.model.User">
+        select user_id,username,avatar_url,gender,simple_desc,position,industry,career,education,full_desc,liked_count,collected_count,follow_count,followed_count,scaned_count
+    	from user where user_id = #{userId}
+    </select>
+
     <select id="selectActivationStateByUserId" resultType="int">
         SELECT activation_state FROM user WHERE user_id = #{userId}
     </select>

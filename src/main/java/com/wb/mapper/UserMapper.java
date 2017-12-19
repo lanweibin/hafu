@@ -14,4 +14,6 @@ public interface UserMapper {
     Integer selectActivationStateByUserId(Integer userId);
 
     User selectUserInfoByUserId(@Param("userId") Integer userId);
+
+    User selectProfileInfoByUserId(@Param("userId") Integer userId);
 }

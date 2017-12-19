@@ -18,7 +18,7 @@ public class User {
     private String fullDesc;
 
     private Integer likedCount;
-    private Integer collectionCount;
+    private Integer collectedCount;
     private Integer followCount;
     private Integer followedCount;
     private Integer followTopicCount;
@@ -149,12 +149,12 @@ public class User {
         this.likedCount = likedCount;
     }
 
-    public Integer getCollectionCount() {
-        return collectionCount;
+    public Integer getCollectedCount() {
+        return collectedCount;
     }
 
-    public void setCollectionCount(Integer collectionCount) {
-        this.collectionCount = collectionCount;
+    public void setCollectedCount(Integer collectedCount) {
+        this.collectedCount = collectedCount;
     }
 
     public Integer getFollowCount() {

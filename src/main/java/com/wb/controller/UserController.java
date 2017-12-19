@@ -1,9 +1,14 @@
 package com.wb.controller;
 
+import com.wb.model.Pagebean;
+import com.wb.model.Question;
+import com.wb.service.QuestionService;
 import com.wb.service.UserService;
 import com.wb.util.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -17,6 +22,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private QuestionService questionService;
 
 
     @RequestMapping("/toLogin")
@@ -51,5 +59,17 @@ public class UserController {
         return "redirect:/toLogin";
     }
 
+    @RequestMapping("/profileQuestion/{userId}")
+    public String profileQuestion(@PathVariable Integer userId, Integer page, HttpServletRequest request, Model model) {
+        Integer localUserId = userService.getUserIdFromRedis(request);
+        //获取用户信息
+        Map<String, Object> map = userService.profile(userId,localUserId);
+        //获取回答列表
+        Pagebean<Question> pageBean = questionService.listQuestionByUserId(userId, page);
+        map.put("pageBean",pageBean);
+
+        model.addAllAttributes(map);
+        return "profileQuestion";
+    }
 
 }
