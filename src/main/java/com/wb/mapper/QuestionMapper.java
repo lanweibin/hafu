@@ -10,4 +10,6 @@ public interface QuestionMapper {
     int selectQuestionCountByUserId(@Param("userId") Integer userId);
 
     List<Question> listQuestionByUserId(Map<String, Object> map);
+
+    List<Question> listQuestionByQuestionId(List<Integer> questionIdList);
 }

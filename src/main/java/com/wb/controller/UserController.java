@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -89,6 +90,19 @@ public class UserController {
 
         model.addAllAttributes(map);
         return "profileAnswer";
+    }
+
+    //侧面我关注的问题
+    @RequestMapping("/profileFollowQuestion/{userId}")
+    public String profileFollowQuestion(@PathVariable Integer userId, HttpServletRequest request, Model model) {
+        Integer localUserId = userService.getUserIdFromRedis(request);
+        //获取用户信息
+        Map<String, Object> map = userService.profile(userId, localUserId);
+        //获取问题列表
+        List<Question> questionList = questionService.listFollowQuestion(userId);
+        map.put("questionList", questionList);
+        model.addAllAttributes(map);
+        return "profileFollowQuestion";
     }
 
 }

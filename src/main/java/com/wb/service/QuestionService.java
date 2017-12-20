@@ -1,20 +1,29 @@
 package com.wb.service;
 
+import com.wb.mapper.AnswerMapper;
 import com.wb.mapper.QuestionMapper;
 import com.wb.model.PageBean;
 import com.wb.model.Question;
+import com.wb.util.MyUtil;
+import com.wb.util.RedisKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class QuestionService {
 
     @Autowired
     private QuestionMapper questionMapper;
+
+    @Autowired
+    private AnswerMapper answerMapper;
+
+    @Autowired
+    private JedisPool jedisPool;
 
     public PageBean<Question> listQuestionByUserId(Integer userId, Integer curPage) {
         //当请求页数为空时
@@ -46,5 +55,28 @@ public class QuestionService {
         pageBean.setList(questionList);
 
         return pageBean;
+    }
+
+    // 列出所关注的问题
+    public List<Question> listFollowQuestion(Integer userId) {
+        Jedis jedis = jedisPool.getResource();
+        // 所关注的问题的id集合
+        Set<String> idSet = jedis.zrange(userId + RedisKey.FOLLOW_QUESTION, 0, -1);
+        List<Integer> idList = MyUtil.StringSetToIntegerList(idSet);
+
+        List<Question> list = new ArrayList<>();
+        if (idList.size() > 0) {
+            list = questionMapper.listQuestionByQuestionId(idList);
+            for (Question question : list) {
+                //设置回答数目
+                int answerCount = answerMapper.selectAnswerCountByUserId(question.getQuestionId());
+                question.setAnswerCount(answerCount);
+                Long followedCount = jedis.zcard(question.getQuestionId() + RedisKey.FOLLOWED_QUESTION);
+                question.setFollowedCount(Integer.parseInt(followedCount + ""));
+            }
+        }
+
+        jedisPool.returnResource(jedis);
+        return list;
     }
 }

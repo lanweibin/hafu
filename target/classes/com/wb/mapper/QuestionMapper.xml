@@ -11,6 +11,17 @@
         WHERE user_id = #{userId}
         limit #{offset},#{limit}
     </select>
+
+    <select id="listQuestionByQuestionId" resultType="com.wb.model.Question">
+        SELECT question_id,question_title,create_time, FROM  question
+        <where>
+            question_id IN
+            <foreach collection="list" item="item" index="index" open="("
+                     separator="," close=")">
+                    #{item}
+            </foreach>
+        </where>
+    </select>
 </mapper>
 
 
