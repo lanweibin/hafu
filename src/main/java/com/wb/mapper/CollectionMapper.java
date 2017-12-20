@@ -15,4 +15,6 @@ public interface CollectionMapper {
     Collection selectCollectionByCollectionId(Integer collectionId);
 
     void insertCollection(Collection collection);
+
+    List<Collection> listCollectionByCollectionId(List<Integer> idList);
 }

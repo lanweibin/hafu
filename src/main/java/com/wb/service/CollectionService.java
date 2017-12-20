@@ -88,4 +88,25 @@ public class CollectionService {
         System.out.println(rank);
         return rank == null ? false : true;
     }
+
+    // 列出某用户所关注的收藏夹
+    public List<Collection> listFollowingCollection(Integer userId) {
+        Jedis jedis = jedisPool.getResource();
+        //得到关注的抽藏夹的 Id 集合
+        Set<String> idSet = jedis.zrange(userId + RedisKey.FOLLOW_COLLECTION, 0, -1);
+        List<Integer> idList = MyUtil.StringSetToIntegerList(idSet);
+
+        List<Collection> list = new ArrayList<>();
+        if (idList.size() > 0) {
+            list = collectionMapper.listCollectionByCollectionId(idList);
+            for (Collection collection : list) {
+                Long answerCount = jedis.zcard(collection.getCollectionId() + RedisKey.COLLECT);
+                collection.setAnswerCount(Integer.parseInt(answerCount + ""));
+                System.out.println(answerCount);
+            }
+        }
+
+        jedisPool.returnResource(jedis);
+        return list;
+    }
 }

@@ -3,6 +3,8 @@ package com.wb.mapper;
 import com.wb.model.User;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 public interface UserMapper {
 
     int selectEmailCount(String email);
@@ -16,4 +18,6 @@ public interface UserMapper {
     User selectUserInfoByUserId(@Param("userId") Integer userId);
 
     User selectProfileInfoByUserId(@Param("userId") Integer userId);
+
+    List<User> listUserInfoByUserId(List<Integer> UserIdList);
 }

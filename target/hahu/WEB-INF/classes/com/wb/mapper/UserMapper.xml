@@ -32,4 +32,15 @@
         SELECT user_id, username, avatar_url, simple_desc FROM  user WHERE  user_id = #{userId}
     </select>
 
+    <select id="listUserInfoByUserId"  resultType="com.wb.model.User">
+        select user_id,username,avatar_url,simple_desc from user
+        <where>
+            user_id in
+            <foreach collection="list" item="item" index="index" open="("
+                     separator="," close=")">
+                #{item}
+            </foreach>
+        </where>
+    </select>
+
 </mapper>

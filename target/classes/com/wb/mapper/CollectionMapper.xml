@@ -40,4 +40,16 @@
         INSERT INTO collection(collection_name,create_time,update_time,user_id)
         VALUES (#{collectionName},#{createTime},#{updateTime},#{userId})
     </insert>
+
+    <select id="listCollectionByCollectionId" resultType="com.wb.model.Collection">
+        SELECT collection_id,collection_name,create_time,update_time,followed_count
+        FROM collection
+        <where>
+            collection_id IN
+            <foreach collection="list" item="item" index="index" open="("
+                     separator="," close=")">
+                    #{item}
+            </foreach>
+        </where>
+    </select>
 </mapper>

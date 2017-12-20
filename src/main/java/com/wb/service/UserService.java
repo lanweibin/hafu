@@ -1,5 +1,6 @@
 package com.wb.service;
 
+import com.sun.org.apache.regexp.internal.RE;
 import com.wb.async.MailTask;
 import com.wb.mapper.CommentMapper;
 import com.wb.mapper.UserMapper;
@@ -247,5 +248,35 @@ public class UserService {
 
         map.put("user", user);
         return map;
+    }
+
+    public List<User> listFollowingUser(Integer userId) {
+        Jedis jedis = jedisPool.getResource();
+        //获取关注者的id 集合
+        Set<String> idSet = jedis.zrange(userId + RedisKey.FOLLOW_PEOPLE, 0, -1);
+        List<Integer> idList = MyUtil.StringSetToIntegerList(idSet);
+
+        List<User> list = new ArrayList<>();
+        if (idList.size() > 0) {
+            list = userMapper.listUserInfoByUserId(idList);
+        }
+
+        jedisPool.returnResource(jedis);
+        return list;
+    }
+
+    public List<User> listFollowedUser(Integer userId) {
+        Jedis jedis = jedisPool.getResource();
+        //获取关注者的用户Id 集合
+        Set<String> idSet = jedis.zrange(userId + RedisKey.FOLLOWED_PEOPLE, 0, -1);
+        List<Integer> idList = MyUtil.StringSetToIntegerList(idSet);
+
+        List<User> list = new ArrayList<>();
+        if (idList.size() > 0){
+            list = userMapper.listUserInfoByUserId(idList);
+        }
+
+        jedisPool.returnResource(jedis);
+        return list;
     }
 }

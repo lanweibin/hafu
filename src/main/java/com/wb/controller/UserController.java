@@ -1,9 +1,8 @@
 package com.wb.controller;
 
-import com.wb.model.Answer;
-import com.wb.model.PageBean;
-import com.wb.model.Question;
+import com.wb.model.*;
 import com.wb.service.AnswerService;
+import com.wb.service.CollectionService;
 import com.wb.service.QuestionService;
 import com.wb.service.UserService;
 import com.wb.util.Response;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +28,9 @@ public class UserController {
 
     @Autowired
     private QuestionService questionService;
+
+    @Autowired
+    private CollectionService collectionService;
 
     @Autowired
     private AnswerService answerService;
@@ -103,6 +106,63 @@ public class UserController {
         map.put("questionList", questionList);
         model.addAllAttributes(map);
         return "profileFollowQuestion";
+    }
+
+    //关注里的收藏
+    @RequestMapping("/profileCollection/{userId}")
+    public String profileCollection(@PathVariable Integer userId, HttpServletRequest request, Model model) {
+        Integer localUserId = userService.getUserIdFromRedis(request);
+        //获取用户信息
+        Map<String, Object> map = userService.profile(userId,localUserId);
+        //获取收藏夹列表
+        List<Collection> collectionList = collectionService.listCreatingCollection(userId);
+        map.put("collectionList", collectionList);
+
+        model.addAllAttributes(map);
+        return "profileCollection";
+    }
+
+    //关注的人
+    @RequestMapping("/profileFollowPeople/{userId}")
+    public String profileFollowPeople(@PathVariable Integer userId, HttpServletRequest request, Model model) {
+        Integer localUserId = userService.getUserIdFromRedis(request);
+        //获取用户信息
+        Map<String, Object> map = userService.profile(userId, localUserId);
+
+        //关注者列表
+        List<User> userList = userService.listFollowingUser(userId);
+        map.put("userList", userList);
+
+        model.addAllAttributes(map);
+        return "profileFollowPeople";
+
+    }
+
+    //被关注用户列表
+    @RequestMapping("/profileFollowedPeople/{userId}")
+    public String profileFollowedPeople(@PathVariable Integer userId, HttpServletRequest request, Model model) {
+        Integer localUserId = userService.getUserIdFromRedis(request);
+        Map<String, Object> map = userService.profile(userId, localUserId);
+
+        //获取被关注者列表
+        List<User> userList = userService.listFollowedUser(userId);
+        map.put("userList", userList);
+
+        model.addAllAttributes(map);
+        return "profileFollowedPeople";
+    }
+
+    //关注的收藏夹
+    @RequestMapping("/profileFollowCollection/{userId}")
+    public String profileFollowCollection(@PathVariable Integer userId, HttpServletRequest request, Model model) {
+        Integer localUserId = userService.getUserIdFromRedis(request);
+        Map<String, Object> map = userService.profile(userId, localUserId);
+        //获取收藏夹列表
+        List<Collection> collectionList = collectionService.listFollowingCollection(userId);
+        map.put("collectionList", collectionList);
+
+        model.addAllAttributes(map);
+        return "profileFollowCollection";
     }
 
 }
