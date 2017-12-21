@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -73,5 +74,14 @@ public class TopicController {
         boolean status = topicService.judgePeopleFollowTopic(userId, topicId);
 
         return new Response(0, "", status);
+    }
+
+    //搜索功能
+    @RequestMapping("/listTopicByTopicName")
+    public String listTopicByTopicName(String topicName, Model model) throws UnsupportedEncodingException {
+        topicName = new String(topicName.getBytes("iso8859-1"),"utf-8");
+        Map<String,Object> map = topicService.listTopicByTopicName(topicName);
+        model.addAllAttributes(map);
+        return "topicList";
     }
 }

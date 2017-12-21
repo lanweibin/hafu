@@ -32,4 +32,9 @@
           UPDATE topic set followed_count = followed_count - 1
         WHERE topic_id = #{topicId}
     </update>
+
+    <select id="lisTopicByTopicName" resultType="com.wb.model.Topic">
+        SELECT * FROM topic
+        WHERE topic_name like #{topicName}
+    </select>
 </mapper>

@@ -185,4 +185,11 @@ public class TopicService {
 
         return rank == null ? false : true;
     }
+
+    public Map<String,Object> listTopicByTopicName(String topicName) {
+        Map<String, Object> map = new HashMap<>();
+        List<Topic> topicList = topicMapper.lisTopicByTopicName("%" + topicName + "%");
+        map.put("topicList",topicList);
+        return  map;
+    }
 }
