@@ -18,4 +18,8 @@ public interface AnswerMapper {
     int listAnswerCountByQuestionId(List<Integer> questionIdList);
 
     List<Answer> listGoodAnswerByQuestionId(Map<String, Object> map);
+
+    List<Answer> listAnswerByCreateTime(@Param("createTime") long createTime);
+
+    List<Answer> selectAnswerByQuestionId(@Param("questionId") Integer questionId);
 }

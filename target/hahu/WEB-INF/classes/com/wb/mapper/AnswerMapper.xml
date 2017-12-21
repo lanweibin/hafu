@@ -93,4 +93,17 @@
         ORDER by liked_count DESC
         limit #{offset},#{limit}
     </select>
+
+    <select id="listAnswerByCreateTime" resultMap="answerMap">
+        SELECT a.answer_id,a.answer_content,a.liked_count,a.create_time,
+		q.question_id,q.question_title,u.user_id,u.username,u.avatar_url,u.simple_desc
+		from answer a join question q on a.question_id = q.question_id
+		join user u on a.user_id = u.user_id
+		ORDER BY a.liked_count DESC, a.create_time DESC
+		limit 0,10
+    </select>
+
+    <select id="selectAnswerByQuestionId" resultType="com.wb.model.Answer">
+        select * from answer where question_id = #{questionId}
+    </select>
 </mapper>

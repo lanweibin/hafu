@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,5 +59,32 @@ public class AnswerService {
         pageBean.setList(answerList);
 
         return pageBean;
+    }
+
+    public Map<String,Object> listTodayHotAnswer() {
+        Map<String,Object> map = new HashMap<>();
+        long period = 1000 * 60 * 60 * 24L;
+        long today = new Date().getTime();
+        System.out.println("period" + period);
+        System.out.println("today" + today);
+        System.out.println("today - period" + (today - period));
+        System.out.println(new Date(today - period));
+        List<Answer> answerList = answerMapper.listAnswerByCreateTime(today - period);
+        map.put("answerList", answerList);
+
+        return map;
+    }
+
+    public Map<String,Object> listMonthHotAnswer() {
+        Map<String, Object> map = new HashMap<>();
+        long period = 1000 * 60 * 60 * 24 * 30L;
+        long today = new Date().getTime();
+        System.out.println("period:" + period);
+        System.out.println("month:" + today);
+        System.out.println("month - period:" + (today - period));
+        System.out.println(new Date(today - period));
+        List<Answer> answerList = answerMapper.listAnswerByCreateTime(today - period);
+        map.put("answerList", answerList);
+        return map;
     }
 }

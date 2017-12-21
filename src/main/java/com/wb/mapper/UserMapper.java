@@ -20,4 +20,10 @@ public interface UserMapper {
     User selectProfileInfoByUserId(@Param("userId") Integer userId);
 
     List<User> listUserInfoByUserId(List<Integer> UserIdList);
+
+    void updateProfile(User user);
+
+    int selectUserCountByUserIdAndPassword(@Param("userId") Integer userId, @Param("password") String password);
+
+    void updatePassword(@Param("userId") Integer userId, @Param("newpassword") String newpassword);
 }

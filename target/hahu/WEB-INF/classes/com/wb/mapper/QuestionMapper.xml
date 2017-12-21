@@ -35,6 +35,19 @@
         limit #{offset},#{limit}
         ORDER
     </select>
+
+    <select id="selectQuestionByQuestionId" resultType="com.wb.model.Question">
+         select * from question where question_id = #{questionId}
+    </select>
+
+    <!--写的什么 不是 清楚-->
+    <select id="listRelatedQuestion" resultType="com.wb.model.Question">
+        select q.question_id,q.question_title,count(*) as answer_count from answer a join
+        (select q.question_id,q.question_title from question_topic qt join question q on qt.question_id = q.question_id
+        where qt.topic_id = (select topic_id from question_topic where question_id = 2 limit 0,1)
+        and q.question_id != 2
+        limit 0,5) q on q.question_id = a.question_id
+    </select>
 </mapper>
 
 

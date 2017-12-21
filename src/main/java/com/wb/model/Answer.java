@@ -1,5 +1,7 @@
 package com.wb.model;
 
+import java.util.List;
+
 public class Answer {
 
     private Integer answerId;
@@ -15,6 +17,16 @@ public class Answer {
 
     private String likeState;
     private Integer commentCount;
+
+    private List<AnswerComment> answerCommentList;
+
+    public List<AnswerComment> getAnswerCommentList() {
+        return answerCommentList;
+    }
+
+    public void setAnswerCommentList(List<AnswerComment> answerCommentList) {
+        this.answerCommentList = answerCommentList;
+    }
 
     public Integer getAnswerId() {
         return answerId;

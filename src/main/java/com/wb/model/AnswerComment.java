@@ -1,42 +1,33 @@
 package com.wb.model;
 
-public class QuestionComment {
-    private Integer questionCommentId;
-    private String questionCommentIdContent;
+public class AnswerComment {
+    private Integer answerCommentId;
+    private String answerCommentContent;
     private Integer likedCount;
     private Long createTime;
     private Integer atUserId;
     private String atUserName;
 
-    private Integer questionId;
+    private Integer answerId;
     private Integer userId;
 
     private String likeState;
-
-    public String getLikeState() {
-        return likeState;
-    }
-
-    public void setLikeState(String likeState) {
-        this.likeState = likeState;
-    }
-
     private User user;
 
-    public Integer getQuestionCommentId() {
-        return questionCommentId;
+    public Integer getAnswerCommentId() {
+        return answerCommentId;
     }
 
-    public void setQuestionCommentId(Integer questionCommentId) {
-        this.questionCommentId = questionCommentId;
+    public void setAnswerCommentId(Integer answerCommentId) {
+        this.answerCommentId = answerCommentId;
     }
 
-    public String getQuestionCommentIdContent() {
-        return questionCommentIdContent;
+    public String getAnswerCommentContent() {
+        return answerCommentContent;
     }
 
-    public void setQuestionCommentIdContent(String questionCommentIdContent) {
-        this.questionCommentIdContent = questionCommentIdContent;
+    public void setAnswerCommentContent(String answerCommentContent) {
+        this.answerCommentContent = answerCommentContent;
     }
 
     public Integer getLikedCount() {
@@ -71,12 +62,12 @@ public class QuestionComment {
         this.atUserName = atUserName;
     }
 
-    public Integer getQuestionId() {
-        return questionId;
+    public Integer getAnswerId() {
+        return answerId;
     }
 
-    public void setQuestionId(Integer questionId) {
-        this.questionId = questionId;
+    public void setAnswerId(Integer answerId) {
+        this.answerId = answerId;
     }
 
     public Integer getUserId() {
@@ -87,6 +78,14 @@ public class QuestionComment {
         this.userId = userId;
     }
 
+    public String getLikeState() {
+        return likeState;
+    }
+
+    public void setLikeState(String likeState) {
+        this.likeState = likeState;
+    }
+
     public User getUser() {
         return user;
     }
@@ -95,17 +94,16 @@ public class QuestionComment {
         this.user = user;
     }
 
-
     @Override
     public String toString() {
-        return "QuestionComment{" +
-                "questionCommentId=" + questionCommentId +
-                ", questionCommentIdContent='" + questionCommentIdContent + '\'' +
+        return "AnswerComment{" +
+                "answerCommentId=" + answerCommentId +
+                ", answerCommentContent='" + answerCommentContent + '\'' +
                 ", likedCount=" + likedCount +
                 ", createTime=" + createTime +
                 ", atUserId=" + atUserId +
                 ", atUserName='" + atUserName + '\'' +
-                ", questionId=" + questionId +
+                ", answerId=" + answerId +
                 ", userId=" + userId +
                 ", likeState='" + likeState + '\'' +
                 ", user=" + user +

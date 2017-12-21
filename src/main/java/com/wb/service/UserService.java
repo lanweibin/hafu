@@ -279,4 +279,24 @@ public class UserService {
         jedisPool.returnResource(jedis);
         return list;
     }
+
+    public User getProfileInfo(Integer userId) {
+        User user = userMapper.selectProfileInfoByUserId(userId);
+        return user;
+    }
+
+    public void updateProfile(User user) {
+        userMapper.updateProfile(user);
+    }
+
+    public Map<String,Object> updatePassword(Integer userId, String password, String newpassword) {
+        Map<String, Object> map = new HashMap<>();
+        int userCount = userMapper.selectUserCountByUserIdAndPassword(userId,MyUtil.md5(password));
+        if (userCount < 1) {
+            map.put("error","原密码不正确");
+            return map;
+        }
+        userMapper.updatePassword(userId, MyUtil.md5(newpassword));
+        return map;
+    }
 }

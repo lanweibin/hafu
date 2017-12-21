@@ -43,4 +43,19 @@
         </where>
     </select>
 
+    <update id="updateProfile">
+        UPDATE  user set username=#{username},simple_desc=#{simpleDesc},position=#{position},
+        industry=#{industry},career=#{career},education=#{education},full_desc=#{fullDesc}
+        WHERE user_id=#{userId}
+    </update>
+
+    <select id="selectUserCountByUserIdAndPassword" resultType="int">
+        select count(*) from user
+    	where user_id = #{userId} and password = #{password}
+    </select>
+
+    <update id="updatePassword">
+        UPDATE USER SET  password = #{newpassword}
+        WHERE user_id = #{userId}
+    </update>
 </mapper>

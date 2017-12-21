@@ -7,6 +7,16 @@
         WHERE answer_id = #{answerId}
     </select>
 
+    <select id="listQuestionCommentByQuestionId" resultType="com.wb.model.Question">
+        select question_comment_id,question_comment_content,liked_count,create_time,at_user_id,at_user_name,question_id,user_id
+		from question_comment
+		where question_id = #{questionId}
+    </select>
 
+    <select id="listAnswerCommentByAnswerId" resultType="com.wb.model.AnswerComment">
+        select answer_comment_id,answer_comment_content,liked_count,create_time,at_user_id,at_user_name,answer_id,user_id
+		from answer_comment
+		where answer_id = #{answerId}
+    </select>
 </mapper>
 
