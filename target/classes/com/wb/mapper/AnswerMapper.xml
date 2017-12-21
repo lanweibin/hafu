@@ -66,4 +66,31 @@
         where u.user_id = #{userId}
         limit #{offset},#{limit}
     </select>
+
+    <select id="listAnswerCountByQuestionId" resultType="int">
+        SELECT COUNT(*) FROM answer
+        <where>
+            question_id IN
+            <foreach collection="list" item="item" index="index" open="("
+                     separator="," close=")">
+                    #{item}
+            </foreach>
+        </where>
+    </select>
+
+    <select id="listGoodAnswerByQuestionId" parameterType="map" resultMap="answerMap">
+        SELECT a.answer_id,a.answer_content,a.liked_count,a.create_time,
+        q.question_id,q.question_title,u.user_id,u.username,u.avatar_url,u.simple_desc
+        FROM answer a join question q on a.question_id = q.question_id
+        join user u on a.user_id = u.user_id
+        <where>
+            a.question_id IN
+            <foreach collection="questionIdList" item="item" index="index" open="("
+                     separator="," close=")">
+                #{item}
+            </foreach>
+        </where>
+        ORDER by liked_count DESC
+        limit #{offset},#{limit}
+    </select>
 </mapper>

@@ -22,6 +22,19 @@
             </foreach>
         </where>
     </select>
+
+    <select id="selectQuestionCountByTopicId" resultType="int">
+        SELECT count(*) FROM question_topic
+        where topic_id = #{topicId}
+    </select>
+
+    <select id="listQuestionIdByTopicId" resultType="int">
+        SELECT question_id from question_topic
+        where topic_id = #{topic_Id}
+        order by qt_id DESC
+        limit #{offset},#{limit}
+        ORDER
+    </select>
 </mapper>
 
 

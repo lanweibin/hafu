@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wb.mapper.TopicMapper">
+    <select id="listHotTopic" resultType="com.wb.model.Topic">
+        SELECT topic_id,topic_name,topic_image,followed_count from topic
+        order by followed_count DESC
+        limit 0,5
+    </select>
+
+    <select id="listRootTopic" resultType="com.wb.model.Topic">
+        SELECT topic_id,topic_name FROM topic WHERE parent_topic_id = 0;
+    </select>
+
+    <select id="selectTopicByTopicId" resultType="com.wb.model.Topic">
+        SELECT topic_id,topic_name,topic_desc,topic_image,parent_topic_id FROM topic WHERE topic_id = #{topicId}
+    </select>
+
+    <select id="selectQuestionIdByTopicId" resultType="int">
+        SELECT question_id FROM question_topic WHERE topic_id = #{topic_id}
+    </select>
+
+    <select id="listTopicByParentId" resultType="com.wb.model.Topic">
+        SELECT topic_id,topic_name,topic_desc,topic_image,parent_topic_id FROM topic WHERE parent_topic_id = #{parentTopicId}
+    </select>
+
+    <update id="updateFollowedCount">
+        UPDATE topic set followed_count = followed_count + 1
+        WHERE topic_id = #{topicId}
+    </update>
+
+    <update id="updateUnFollowedCount">
+          UPDATE topic set followed_count = followed_count - 1
+        WHERE topic_id = #{topicId}
+    </update>
+</mapper>
