@@ -8,6 +8,7 @@ import com.wb.model.Answer;
 import com.wb.model.PageBean;
 import com.wb.model.Question;
 import com.wb.model.Topic;
+import com.wb.util.MyUtil;
 import com.wb.util.RedisKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -191,5 +192,22 @@ public class TopicService {
         List<Topic> topicList = topicMapper.lisTopicByTopicName("%" + topicName + "%");
         map.put("topicList",topicList);
         return  map;
+    }
+
+    // 列出所关注的的话题
+    public List<Topic> listFollowingTopic(Integer userId) {
+        Jedis jedis = jedisPool.getResource();
+        //获取所关注的话题Id集合
+        Set<String> idSet = jedis.zrange(userId + RedisKey.FOLLOW_TOPIC, 0, -1);
+        List<Integer> idList = MyUtil.StringSetToIntegerList(idSet);
+
+        List<Topic> list = new ArrayList<>();
+        if (idList.size() > 0) {
+            list = topicMapper.listTopicByTopicId(idList);
+        }
+
+        jedisPool.returnResource(jedis);
+        return list;
+
     }
 }

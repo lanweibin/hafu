@@ -1,17 +1,24 @@
 package com.wb.controller;
 
+import com.wb.model.Message;
 import com.wb.model.User;
 import com.wb.service.MessageService;
 import com.wb.service.UserService;
+import com.wb.util.MyConstant;
+import com.wb.util.QiniuyunUtil;
 import com.wb.util.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/")
@@ -65,5 +72,32 @@ public class IndexController {
             return "forward:/setting";
         }
         return "redirect:/logout";
+    }
+
+    @RequestMapping("/message")
+    public String message(HttpServletRequest request, Model model) {
+        Integer userId = userService.getUserIdFromRedis(request);
+        Map<String, List<Message>> map = messageService.listMessage(userId);
+        model.addAttribute("map", map);
+        return "message";
+    }
+
+    //修改头像图片
+    @RequestMapping("/updateAvatarUrl")
+    public String updateAvatarUrl(MultipartFile paramName, HttpServletRequest request) throws IOException {
+        Integer userId = userService.getUserIdFromRedis(request);
+
+        //包含原始文件名的字符串
+        String fi = paramName.getOriginalFilename();
+        //获取文件扩展名
+        String fileNameExtension = fi.substring(fi.indexOf("."), fi.length());
+        //生成真实的文件名
+        String remoteFileName = UUID.randomUUID().toString() + fileNameExtension;
+        QiniuyunUtil.upload(paramName.getBytes(), remoteFileName);
+        //返回图片的URL地址
+        String avatarUrl = MyConstant.QINIU_IMAGE_URL + remoteFileName;
+
+        userService.updateAvatarUrl(userId, avatarUrl);
+        return "redirect:/profile/" + userId;
     }
 }

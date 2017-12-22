@@ -1,10 +1,8 @@
 package com.wb.controller;
 
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import com.wb.model.*;
-import com.wb.service.AnswerService;
-import com.wb.service.CollectionService;
-import com.wb.service.QuestionService;
-import com.wb.service.UserService;
+import com.wb.service.*;
 import com.wb.util.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -34,6 +32,9 @@ public class UserController {
 
     @Autowired
     private AnswerService answerService;
+
+    @Autowired
+    private TopicService topicService;
 
 
     @RequestMapping("/toLogin")
@@ -163,6 +164,19 @@ public class UserController {
 
         model.addAllAttributes(map);
         return "profileFollowCollection";
+    }
+
+    @RequestMapping("/profileFollowTopic/{userId}")
+    public String profileFollowTopic(@PathVariable Integer userId, HttpServletRequest request, Model model) {
+        Integer localUserId = userService.getUserIdFromRedis(request);
+        // 获取用户信息
+        Map<String, Object> map = userService.profile(userId, localUserId);
+        //获取话题列表
+        List<Topic> topicList = topicService.listFollowingTopic(userId);
+        map.put("topicList", topicList);
+        model.addAllAttributes(map);
+
+        return "profileFollowTopic";
     }
 
 }

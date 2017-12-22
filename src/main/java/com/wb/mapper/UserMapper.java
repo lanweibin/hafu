@@ -26,4 +26,6 @@ public interface UserMapper {
     int selectUserCountByUserIdAndPassword(@Param("userId") Integer userId, @Param("password") String password);
 
     void updatePassword(@Param("userId") Integer userId, @Param("newpassword") String newpassword);
+
+    void updateAvatarUrl(@Param("userId") Integer userId, @Param("avatarUrl") String avatarUrl);
 }

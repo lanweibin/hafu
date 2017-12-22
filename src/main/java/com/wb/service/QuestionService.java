@@ -170,4 +170,27 @@ public class QuestionService {
         jedisPool.returnResource(jedis);
         return map;
     }
+
+    public List<Question> listQuestionByPage(Integer curPage) {
+        curPage = curPage == null ? 1 : curPage;
+        int limit = 3;
+        int offset = (curPage - 1) * limit;
+
+        Jedis jedis = jedisPool.getResource();
+
+        Set<String> idSet = jedis.zrange(RedisKey.QUESTION_SCANED_COUNT, offset, offset + limit -1);
+        List<Integer> idList = MyUtil.StringSetToIntegerList(idSet);
+        System.out.println(idList);
+        List<Question> questionList = new ArrayList<>();
+        if (idList.size() > 0) {
+            questionList = questionMapper.listQuestionByQuestionId(idList);
+
+            for (Question question : questionList) {
+                question.setAnswerCount(answerMapper.selectAnswerCountByUserId(question.getQuestionId()));
+                question.setFollowedCount(Integer.parseInt(jedis.zcard(question.getQuestionId() + RedisKey.FOLLOWED_QUESTION) + ""));
+            }
+        }
+        jedisPool.returnResource(jedis);
+        return questionList;
+    }
 }

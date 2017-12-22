@@ -21,4 +21,6 @@ public interface TopicMapper {
     void updateUnFollowedCount(Integer topicId);
 
     List<Topic> lisTopicByTopicName(@Param("topicName") String topicName);
+
+    List<Topic> listTopicByTopicId(List<Integer> idList);
 }

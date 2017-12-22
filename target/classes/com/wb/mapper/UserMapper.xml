@@ -58,4 +58,9 @@
         UPDATE USER SET  password = #{newpassword}
         WHERE user_id = #{userId}
     </update>
+
+    <update id="updateAvatarUrl">
+        UPDATE user  SET avatar_url = #{avatarUrl}
+        WHERE user_id = #{userId}
+    </update>
 </mapper>

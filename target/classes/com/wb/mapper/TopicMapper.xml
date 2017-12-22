@@ -37,4 +37,14 @@
         SELECT * FROM topic
         WHERE topic_name like #{topicName}
     </select>
+
+    <select id="listTopicByTopicId" resultType="com.wb.model.Topic">
+        select topic_id,topic_name,topic_image from topic
+        <where>
+            <foreach collection="list" item="item" index="index" open="("
+                     separator="," close=")">
+                    #{item}
+            </foreach>
+        </where>
+    </select>
 </mapper>

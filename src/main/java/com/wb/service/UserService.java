@@ -1,6 +1,5 @@
 package com.wb.service;
 
-import com.sun.org.apache.regexp.internal.RE;
 import com.wb.async.MailTask;
 import com.wb.mapper.CommentMapper;
 import com.wb.mapper.UserMapper;
@@ -17,12 +16,10 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
-import sun.reflect.generics.visitor.Reifier;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.swing.text.rtf.RTFEditorKit;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -298,5 +295,9 @@ public class UserService {
         }
         userMapper.updatePassword(userId, MyUtil.md5(newpassword));
         return map;
+    }
+
+    public void updateAvatarUrl(Integer userId, String avatarUrl) {
+        userMapper.updateAvatarUrl(userId, avatarUrl);
     }
 }
